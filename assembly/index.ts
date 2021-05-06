@@ -33,10 +33,15 @@ export class PanelImpl extends Element {
     // this.elements.addElement(new MenuList(panel));
   }
 
-  selectAt(x: f64, y: f64): void {
-    // this.elements.onSelect(x, y);
+  onHover(x: f64, y: f64): void {}
+
+  onSelect(x: f64, y: f64): void {
     this.menu_list.onSelect(x, y);
   }
+
+  onDrag(x: f64, y: f64): void {}
+
+  onDeselect(x: f64, y: f64): void {}
 
   handleMessage(message: string): void {
     this.console.print(message);
