@@ -7,19 +7,22 @@ import Label from "./elements/Label";
 import Container from "./types/Container";
 import RoundButton from "./elements/RoundButton";
 import Theme from "./types/Theme";
+import Console from "./menus/Console";
 import UiPanel from "../codegen/ui/UiPanel";
 
-import MenuList from "./containers/MenuList";
+import MenuList from "./menus/MenuList";
 
 let main_panel: PanelImpl;
 
 export class PanelImpl extends Element {
   menu_list: MenuList;
+  console: Console;
 
   constructor(panel: UiPanel) {
     super(panel);
 
     this.menu_list = new MenuList(panel);
+    this.console = new Console(panel);
 
     // this.elements = new Container(panel);
 
@@ -36,12 +39,13 @@ export class PanelImpl extends Element {
   }
 
   handleMessage(message: string): void {
-    // TODO
+    this.console.print(message);
   }
 
   update(dt: f64): void {
     // this.elements.update(dt);
     this.menu_list.update(dt);
+    this.console.update(dt);
 
     // this.drawCircleOutline(-0.25, 0, 0.115, 0.003, this.primary);
 	  // this.drawCircle(-0.25, 0, 0.1, this.primary);
