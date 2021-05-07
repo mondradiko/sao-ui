@@ -112,4 +112,8 @@ export default class NotchedBox extends Element implements DynamicElement {
   close(): void {
     this.fade_target = 0.0;
   }
+
+  animateIn(): void {
+    //TODO
+  }
 }

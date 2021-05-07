@@ -31,4 +31,10 @@ export default class Container<ElementType extends DynamicElement> extends Eleme
       this.elements[i].onSelect(x, y);
     }
   }
+
+  animateIn(): void {
+    for (let i = 0; i < this.elements.length; i++) {
+      this.elements[i].animateIn();
+    }
+  }
 }

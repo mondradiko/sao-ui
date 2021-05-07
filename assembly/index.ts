@@ -17,6 +17,7 @@ let main_panel: PanelImpl;
 export class PanelImpl extends Element {
   menu_list: MenuList;
   console: Console;
+  is_showing_menu: bool
 
   constructor(panel: UiPanel) {
     super(panel);

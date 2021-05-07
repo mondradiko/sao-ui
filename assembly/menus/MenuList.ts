@@ -15,6 +15,12 @@ export default class MenuList extends Element {
   character_info: CharacterInfo;
   player_menu: PlayerMenu;
 
+  entering: bool = false;
+  showing: bool = false;
+  showing_count: i32 = 0;
+  inter_button_entry_delay: f64 = 0.05;
+  cumulative_entering_time: f64 = 0;
+
   constructor(panel: UiPanel) {
     super(panel);
 
@@ -45,21 +51,48 @@ export default class MenuList extends Element {
   }
 
   update(dt: f64): void {
-    this.buttons.update(dt);
-    this.boxes.update(dt);
-
-    if (this.character_button.signalled) {
-      this.character_button.signalled = false;
-      this.character_info.toggle();
-      this.player_menu.toggle();
+    if (this.entering) {
+      let time_elapsed = this.cumulative_entering_time + dt;
+      this.cumulative_entering_time = time_elapsed;
+      let num_to_be_showing = time_elapsed / this.inter_button_entry_delay;
+      let num_buttons = this.buttons.elements.length;
+      if (num_to_be_showing > this.showing_count) {
+        if (this.showing_count == num_buttons) {
+          this.entering = false;
+        } else {
+          this.buttons.elements[num_buttons - this.showing_count - 1].animateIn();
+          this.showing_count++;
+        }
+      }
     }
+    if (this.showing) {
+      this.buttons.update(dt);
+      this.boxes.update(dt);
 
-    this.character_info.update(dt);
-    this.player_menu.update(dt);
+      if (this.character_button.signalled) {
+        this.character_button.signalled = false;
+        this.character_info.toggle();
+        this.player_menu.toggle();
+      }
+
+      this.character_info.update(dt);
+      this.player_menu.update(dt);
+    }
   }
 
   onSelect(x: f64, y: f64): void {
-    this.buttons.onSelect(x, y);
-    this.boxes.onSelect(x, y);
+    if (!this.showing && !this.entering) {
+      this.show();
+    } else {
+      this.buttons.onSelect(x, y);
+      this.boxes.onSelect(x, y);
+    }
+  }
+
+  show(): void {
+    this.entering = true;
+    this.showing = true;
+    this.showing_count = 0;
+    this.cumulative_entering_time = 0;
   }
 }

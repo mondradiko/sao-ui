@@ -32,6 +32,10 @@ class QueuedMessage implements DynamicElement {
   setOffset(offset_y: f64): void {
     this.style.setOffset(this.offset_x, offset_y);
   }
+
+  animateIn(): void {
+    //TODO
+  }
 }
 
 export default class Console {
