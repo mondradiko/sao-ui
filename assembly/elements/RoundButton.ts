@@ -4,6 +4,16 @@ import DynamicElement from "../types/DynamicElement";
 import Theme from "../types/Theme";
 import UiPanel from "../../codegen/ui/UiPanel";
 
+/**
+   * 0 = Entering
+   * 1 = Disabled
+   * 2 = Deselected
+   * 3 = Active
+   */
+const RING_COLORS = [Theme.white, Theme.disabled_button, Theme.disabled_button, Theme.primary];
+const CIRCLE_COLORS = [Theme.white, Theme.disabled_button, Theme.disabled_button, Theme.primary];
+const ICON_COLORS = [Theme.secondary, Theme.secondary, Theme.secondary, Theme.white];
+
 export default class RoundButton extends Element implements DynamicElement {
   public signalled: bool = false;
 
@@ -23,8 +33,8 @@ export default class RoundButton extends Element implements DynamicElement {
   private anim_previous_circle_color: Color = Theme.white
   private anim_previous_icon_color: Color = Theme.white
   private anim_button_status: i8 = 0;
-  private anim_button_delta: f64 = 0;
-  anim_change_duration: f64 = 0.2;
+  private anim_button_time: f64 = 0;
+  anim_change_duration: f64 = 0.1;
   anim_ring_color: Color = Theme.white
   anim_circle_color: Color = Theme.white
   anim_icon_color: Color = Theme.white
@@ -37,6 +47,8 @@ export default class RoundButton extends Element implements DynamicElement {
 
   update(dt: f64): bool {
     this.fade_step += dt;
+
+    this.recalculateColor(dt);
 
     if (!this.is_visible) return true;
 
@@ -52,12 +64,33 @@ export default class RoundButton extends Element implements DynamicElement {
     return true;
   }
 
+  private recalculateColor(dt: f64): void {
+    let is_animating: bool = this.anim_button_time < this.anim_change_duration;
+    this.anim_button_time += dt;
+    if (is_animating) {
+      let d = this.anim_button_time / this.anim_change_duration;
+      let target_ring_color = RING_COLORS[this.anim_button_status];
+      let target_circle_color = CIRCLE_COLORS[this.anim_button_status];
+      let target_icon_color = ICON_COLORS[this.anim_button_status];
+      if (d >= 1) {
+        this.anim_ring_color = target_ring_color;
+        this.anim_circle_color = target_circle_color;
+        this.anim_icon_color = target_icon_color;
+      } else {
+        this.anim_ring_color = Color.lerp(this.anim_previous_ring_color, target_ring_color, d);
+        this.anim_circle_color = Color.lerp(this.anim_previous_circle_color, target_circle_color, d);
+        this.anim_icon_color = Color.lerp(this.anim_previous_icon_color, target_icon_color, d);
+      }
+    }
+  }
+
   drawAnimateIn(): void {
     let d = this.fade_step / this.animate_in_length; //from 0.0-1.0
     let color = Theme.white;
     if (d >= 1) {
       d = 1;
       this.playing_animate_in = false;
+      this.setVisualStatus(1);
     }
 
     let ease_func = this.easeOutExpo(d);
@@ -67,12 +100,13 @@ export default class RoundButton extends Element implements DynamicElement {
 
   /**
    * 0 = Entering
-   * 1 = Disabled/deselected
-   * 2 = Active
-   * 3 = Clicked
+   * 1 = Disabled
+   * 2 = Deselected
+   * 3 = Active
    */
   setVisualStatus(status: i8): void {
     this.anim_button_status = status;
+    this.anim_button_time = 0;
   }
 
   easeOutExpo(x: number): number {
