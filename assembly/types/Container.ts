@@ -26,10 +26,24 @@ export default class Container<ElementType extends DynamicElement> extends Eleme
     return i != 0;
   }
 
-  onSelect(x: f64, y: f64): void {
+  //if any one of the elements consumed the event then return true
+  onSelect(x: f64, y: f64): bool {
+    let status = false;
     for (let i = 0; i < this.elements.length; i++) {
-      this.elements[i].onSelect(x, y);
+      if (this.elements[i].onSelect(x, y)) {
+        status = true;
+      }
     }
+    return status;
+  }
+
+  isInBounds(x: f64, y: f64): bool {
+    for (let i = 0; i < this.elements.length; i++) {
+      if (this.elements[i].isInBounds(x, y)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   animateIn(): void {

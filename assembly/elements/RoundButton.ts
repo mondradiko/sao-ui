@@ -15,7 +15,7 @@ const CIRCLE_COLORS = [Theme.white, Theme.disabled_button, Theme.disabled_button
 const ICON_COLORS = [Theme.secondary, Theme.secondary, Theme.secondary, Theme.white];
 
 export default class RoundButton extends Element implements DynamicElement {
-  public signalled: bool = false;
+  public is_selected: bool = false;
 
   fade_duration: f64 = 0.2;
   fade_duration_ring: f64 = 0.45;
@@ -90,7 +90,7 @@ export default class RoundButton extends Element implements DynamicElement {
     if (d >= 1) {
       d = 1;
       this.playing_animate_in = false;
-      this.setVisualStatus(1);
+      this.setVisualStatus(this.is_selected ? 3 : 2);
     }
 
     let ease_func = this.easeOutExpo(d);
@@ -145,15 +145,31 @@ export default class RoundButton extends Element implements DynamicElement {
     this.drawCircleOutline(this.x, this.y, ring_radius, 0.001, color_ring);
   }
 
-  onSelect(x: f64, y: f64): void {
+  onSelect(x: f64, y: f64): bool {
+    if (this.isInBounds(x, y)) {
+      this.fade_step = 0;
+      this.is_selected = true;
+      this.playing_clicked_animation = true;
+      if (this.anim_button_status == 2) { //if deselected
+        this.setVisualStatus(3);
+      }
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  isInBounds(x: f64, y: f64): bool {
     let dx = x - this.x;
     let dy = y - this.y;
     let d = Math.sqrt(dx * dx + dy * dy);
+    return d < this.radius;
+  }
 
-    if (d < this.radius) {
-      this.fade_step = 0;
-      this.signalled = true;
-      this.playing_clicked_animation = true;
+  markDeselected(): void {
+    this.is_selected = false;
+    if (this.anim_button_status == 3) {
+      this.setVisualStatus(2);
     }
   }
 

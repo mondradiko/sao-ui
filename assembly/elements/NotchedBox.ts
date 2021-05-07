@@ -107,7 +107,13 @@ export default class NotchedBox extends Element implements DynamicElement {
     return true;
   }
 
-  onSelect(x: f64, y: f64): void {}
+  onSelect(x: f64, y: f64): bool {
+    return false;
+  }
+
+  isInBounds(x: f64, y: f64): bool {
+    return x > this.x && x < (this.x + this.w) && y > this.y && y < (this.y + this.h);
+  }
 
   close(): void {
     this.fade_target = 0.0;

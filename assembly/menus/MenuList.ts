@@ -59,7 +59,11 @@ export default class MenuList extends Element {
       let num_buttons = this.buttons.elements.length;
       if (num_to_be_showing > this.showing_count) {
         if (this.showing_count == num_buttons) {
-          this.entering = false;
+          if (this.cumulative_entering_time >= 1) {
+            this.entering = false;
+            this.character_info.open();
+            this.player_menu.open();
+          }
         } else {
           this.buttons.elements[num_buttons - this.showing_count - 1].animate_in_distance = 0.25 + (this.inter_button_space * (num_buttons - this.showing_count)) * -1
           this.buttons.elements[num_buttons - this.showing_count - 1].animateIn();
@@ -71,12 +75,6 @@ export default class MenuList extends Element {
       this.buttons.update(dt);
       this.boxes.update(dt);
 
-      if (this.character_button.signalled) {
-        this.character_button.signalled = false;
-        this.character_info.toggle();
-        this.player_menu.toggle();
-      }
-
       this.character_info.update(dt);
       this.player_menu.update(dt);
     }
@@ -85,9 +83,31 @@ export default class MenuList extends Element {
   onSelect(x: f64, y: f64): void {
     if (!this.showing && !this.entering) {
       this.show();
+      for (let i = 0; i < this.buttons.elements.length; i++) {
+        this.buttons.elements[i].is_selected = false;
+      }
+      this.character_button.is_selected = true;
     } else {
-      this.buttons.onSelect(x, y);
+      let was_selected = this.character_button.is_selected;
+      if (this.buttons.onSelect(x, y)) {
+        for (let i = 0; i < this.buttons.elements.length; i++) {
+          let button = this.buttons.elements[i];
+          if (!button.isInBounds(x, y)) {
+            button.markDeselected();
+          }
+        }
+      }
       this.boxes.onSelect(x, y);
+
+      if (this.character_button.is_selected != was_selected) {
+        if (this.character_button.is_selected) {
+          this.character_info.open();
+          this.player_menu.open();
+        } else {
+          this.character_info.close();
+          this.player_menu.close();
+        }
+      }
     }
   }
 

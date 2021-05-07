@@ -27,7 +27,13 @@ class QueuedMessage implements DynamicElement {
     return this.lifespan > 0.0;
   }
 
-  onSelect(x: f64, y: f64): void {}
+  onSelect(x: f64, y: f64): bool {
+    return false;
+  }
+
+  isInBounds(x: f64, y: f64): bool {
+    return false;
+  }
 
   setOffset(offset_y: f64): void {
     this.style.setOffset(this.offset_x, offset_y);
