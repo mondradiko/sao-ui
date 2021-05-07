@@ -16,7 +16,18 @@ export default class RoundButton extends Element implements DynamicElement {
 
   playing_animate_in: bool = false;
   animate_in_length: f64 = 0.6;
-  animate_in_distance: f64 = 0.25;
+  public animate_in_distance: f64 = 0.25;
+
+  
+  private anim_previous_ring_color: Color = Theme.white
+  private anim_previous_circle_color: Color = Theme.white
+  private anim_previous_icon_color: Color = Theme.white
+  private anim_button_status: i8 = 0;
+  private anim_button_delta: f64 = 0;
+  anim_change_duration: f64 = 0.2;
+  anim_ring_color: Color = Theme.white
+  anim_circle_color: Color = Theme.white
+  anim_icon_color: Color = Theme.white
 
   constructor(panel: UiPanel,
               public x: f64, public y: f64,
@@ -34,9 +45,8 @@ export default class RoundButton extends Element implements DynamicElement {
     } else if (this.playing_clicked_animation) {
       this.drawClicked()
     } else {
-      let color = Theme.primary;
-      this.drawCircle(this.x, this.y, this.radius, color);
-      this.drawCircleOutline(this.x, this.y, this.radius + 0.005, 0.001, color);
+      this.drawCircle(this.x, this.y, this.radius, this.anim_circle_color);
+      this.drawCircleOutline(this.x, this.y, this.radius + 0.005, 0.001, this.anim_ring_color);
     }
 
     return true;
@@ -44,16 +54,25 @@ export default class RoundButton extends Element implements DynamicElement {
 
   drawAnimateIn(): void {
     let d = this.fade_step / this.animate_in_length; //from 0.0-1.0
+    let color = Theme.white;
     if (d >= 1) {
-      this.playing_animate_in = false;
       d = 1;
+      this.playing_animate_in = false;
     }
 
-    let color = Theme.primary;
-    color.a = d;
     let ease_func = this.easeOutExpo(d);
-    this.drawCircle(this.x, this.y + this.animate_in_distance * (1 - ease_func), this.radius, color);
-    this.drawCircleOutline(this.x, this.y + this.animate_in_distance * (1 - ease_func), this.radius + 0.005, 0.001, color);
+    this.drawCircle(this.x, this.y + this.animate_in_distance * (1 - ease_func), this.radius, this.anim_circle_color);
+    this.drawCircleOutline(this.x, this.y + this.animate_in_distance * (1 - ease_func), this.radius + 0.005, 0.001, this.anim_ring_color);
+  }
+
+  /**
+   * 0 = Entering
+   * 1 = Disabled/deselected
+   * 2 = Active
+   * 3 = Clicked
+   */
+  setVisualStatus(status: i8): void {
+    this.anim_button_status = status;
   }
 
   easeOutExpo(x: number): number {
@@ -78,17 +97,18 @@ export default class RoundButton extends Element implements DynamicElement {
     } else {
       d_ring = Math.pow(d_ring, 5);
     }
-    let color = Color.lerp(Theme.primary, Theme.white, d);
-    let ring_color = Theme.primary.clone();
-    ring_color.a = 1 - Math.sqrt(d_ring);
+    let color_circle = Color.lerp(this.anim_circle_color, Theme.white, d);
+    let target_ring_color = Theme.white.clone();
+    target_ring_color.a = 1 - Math.sqrt(d_ring);
+    let color_ring = Color.lerp(this.anim_ring_color, target_ring_color, d);
 
     let shrink = (d - d * d) * 4.0;
     let shrink_ring = (d_ring - d_ring * d_ring) * 4.0;
     let outer_radius = this.radius - 0.005 * shrink;
     let ring_radius = this.radius + 0.005 + (0.005 * shrink_ring);
 
-    this.drawCircle(this.x, this.y, outer_radius, color);
-    this.drawCircleOutline(this.x, this.y, ring_radius, 0.001, ring_color);
+    this.drawCircle(this.x, this.y, outer_radius, color_circle);
+    this.drawCircleOutline(this.x, this.y, ring_radius, 0.001, color_ring);
   }
 
   onSelect(x: f64, y: f64): void {

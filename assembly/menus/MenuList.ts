@@ -20,13 +20,14 @@ export default class MenuList extends Element {
   showing_count: i32 = 0;
   inter_button_entry_delay: f64 = 0.05;
   cumulative_entering_time: f64 = 0;
+  inter_button_space: f64 = -0.1;
 
   constructor(panel: UiPanel) {
     super(panel);
 
     let x = -0.25;
     let top = 0.25;
-    let space = -0.1;
+    let space = this.inter_button_space;
     let count = 5;
     let radius = 0.03;
 
@@ -60,6 +61,7 @@ export default class MenuList extends Element {
         if (this.showing_count == num_buttons) {
           this.entering = false;
         } else {
+          this.buttons.elements[num_buttons - this.showing_count - 1].animate_in_distance = 0.25 + (this.inter_button_space * (num_buttons - this.showing_count)) * -1
           this.buttons.elements[num_buttons - this.showing_count - 1].animateIn();
           this.showing_count++;
         }
