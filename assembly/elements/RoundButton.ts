@@ -7,16 +7,6 @@ import ColorAnimation from "../types/ColorAnimation";
 import Animation from "../types/Animation";
 import { AnimationTimingFunction } from "../types/Animation";
 
-/**
-   * 0 = Entering
-   * 1 = Disabled
-   * 2 = Deselected
-   * 3 = Active
-   */
-const RING_COLORS = [Theme.white, Theme.disabled_button, Theme.disabled_button, Theme.primary];
-const CIRCLE_COLORS = [Theme.white, Theme.disabled_button, Theme.disabled_button, Theme.primary];
-const ICON_COLORS = [Theme.secondary, Theme.secondary, Theme.secondary, Theme.white];
-
 export default class RoundButton extends Element implements DynamicElement {
   public is_selected: bool = false;
 
@@ -75,12 +65,12 @@ export default class RoundButton extends Element implements DynamicElement {
     this.anim_button_status = status;
 
     let currentCircleColor: Color = this.anim_circle_color.getCurrentColor();
-    let currentRingColor: Color = this.anim_circle_color.getCurrentColor();
-    let currentIconColor: Color = this.anim_circle_color.getCurrentColor();
+    let currentRingColor: Color = this.anim_ring_color.getCurrentColor();
+    let currentIconColor: Color = this.anim_icon_color.getCurrentColor();
 
-    this.anim_circle_color = new ColorAnimation(currentCircleColor, CIRCLE_COLORS[status], this.anim_change_duration, AnimationTimingFunction.LINEAR);
-    this.anim_ring_color = new ColorAnimation(currentRingColor, RING_COLORS[status], this.anim_change_duration, AnimationTimingFunction.LINEAR);
-    this.anim_icon_color = new ColorAnimation(currentIconColor, ICON_COLORS[status], this.anim_change_duration, AnimationTimingFunction.LINEAR);
+    this.anim_circle_color = new ColorAnimation(currentCircleColor, Theme.CIRCLE_COLORS[status], this.anim_change_duration, AnimationTimingFunction.LINEAR);
+    this.anim_ring_color = new ColorAnimation(currentRingColor, Theme.RING_COLORS[status], this.anim_change_duration, AnimationTimingFunction.LINEAR);
+    this.anim_icon_color = new ColorAnimation(currentIconColor, Theme.ICON_COLORS[status], this.anim_change_duration, AnimationTimingFunction.LINEAR);
   }
 
   easeOutExpo(x: number): number {

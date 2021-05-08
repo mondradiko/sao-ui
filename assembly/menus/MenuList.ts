@@ -7,10 +7,11 @@ import UiPanel from "../../codegen/ui/UiPanel";
 import CharacterInfo from "./CharacterInfo";
 import PlayerMenu from "./PlayerMenu";
 import TimerCallback from "../types/TimerCallback";
+import DynamicElement from "../types/DynamicElement";
 
 export default class MenuList extends Element {
   buttons: Container<RoundButton>;
-  boxes: Container<NotchedBox>;
+  boxes: Container<DynamicElement>;
   character_button: RoundButton;
 
   character_info: CharacterInfo;
@@ -50,6 +51,8 @@ export default class MenuList extends Element {
 
     this.character_info = new CharacterInfo(this.panel, this.character_button);
     this.player_menu = new PlayerMenu(this.panel, this.character_button);
+    this.boxes.addElement(this.character_info);
+    this.boxes.addElement(this.player_menu);
 
     for (let i = 0; i < buttons.length; i++) {
       this.buttons.addElement(buttons[i]);
@@ -92,9 +95,6 @@ export default class MenuList extends Element {
     if (this.showing) {
       this.buttons.update(dt);
       this.boxes.update(dt);
-
-      this.character_info.update(dt);
-      this.player_menu.update(dt);
     }
   }
 
@@ -125,10 +125,10 @@ export default class MenuList extends Element {
           if (this.character_button.is_selected) {
             this.timers.push(new TimerCallback(0.3, this.character_info, (character_info) => {
               (character_info as CharacterInfo).open();
-            }))
+            }));
             this.timers.push(new TimerCallback(0.3, this.player_menu, (player_menu) => {
               (player_menu as PlayerMenu).open();
-            }))
+            }));
           } else {
             this.character_info.close();
             this.player_menu.close();

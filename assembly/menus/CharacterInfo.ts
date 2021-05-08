@@ -4,8 +4,9 @@ import RoundButton from "../elements/RoundButton";
 import Theme from "../types/Theme";
 import UiPanel from "../../codegen/ui/UiPanel";
 import Element from "../types/Element";
+import DynamicElement from "../types/DynamicElement";
 
-export default class CharacterInfo extends Element {
+export default class CharacterInfo extends Element implements DynamicElement {
   state: string = "closed";
   boxes: Container<NotchedBox> = new Container(this.panel);
 
@@ -13,14 +14,22 @@ export default class CharacterInfo extends Element {
     super(panel);
   }
 
-  update(dt: f64): void {
+  update(dt: f64): bool {
     if (!this.boxes.update(dt)) {
       this.state = "closed";
     }
+    return true;
   }
 
-  onSelect(x: f64, y: f64): void {
-    this.boxes.onSelect(x, y);
+  onSelect(x: f64, y: f64): bool {
+    return this.boxes.onSelect(x, y);
+  }
+
+  animateIn(): void {
+    this.open();
+  }
+  isInBounds(x: number, y: number): bool {
+    return this.boxes.isInBounds(x, y);
   }
 
   toggle(): void {

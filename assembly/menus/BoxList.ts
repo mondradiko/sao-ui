@@ -1,9 +1,8 @@
 import Container from "../types/Container";
-import NotchedBox from "../elements/NotchedBox";
-import Theme from "../types/Theme";
 import UiPanel from "../../codegen/ui/UiPanel";
+import BoxButton from "../elements/BoxButton";
 
-export default class BoxList extends Container<NotchedBox> {
+export default class BoxList extends Container<BoxButton> {
   constructor(panel: UiPanel) { super(panel); }
 
   /*update(dt: f64): bool {
