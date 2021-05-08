@@ -4,9 +4,9 @@ export default class Animation {
     constructor(public initialValue: f64, public targetValue: f64, public duration: f64, public timingFunc: AnimationTimingFunction) { }
 
     public update(dt: f64): f64 {
-        if (this.isFinished()) return this.targetValue;
+        if (this.isFinished() || this.duration == 0) return this.targetValue;
         this.elapsed_time += dt;
-        let percent = Math.min(this.elapsed_time / this.duration, 1);
+        let percent: f64 = Math.min(this.elapsed_time / this.duration, 1);
         if (this.timingFunc == AnimationTimingFunction.EASE_IN) {
             percent = this.easeInExpo(percent);
         } else if (this.timingFunc == AnimationTimingFunction.EASE_OUT) {
