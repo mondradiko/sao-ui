@@ -1,6 +1,6 @@
 export default class Animation {
 
-    private elapsed_time: f64 = 0.0;
+    protected elapsed_time: f64 = 0.0;
     constructor(public initialValue: f64, public targetValue: f64, public duration: f64, public timingFunc: AnimationTimingFunction) {}
 
     public update(dt: f64): f64 {
@@ -21,11 +21,11 @@ export default class Animation {
         return this.elapsed_time >= this.duration;
     }
 
-    private easeOutExpo(x: f64): f64 {
+    protected easeOutExpo(x: f64): f64 {
         return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
     }
 
-    private easeInExpo(x: f64): f64 {
+    protected easeInExpo(x: f64): f64 {
         return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
     }
 
