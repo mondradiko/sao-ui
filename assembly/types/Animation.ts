@@ -20,7 +20,7 @@ export default class Animation {
     }
 
     public getValue(): f64 {
-        if (this.isFinished || this.duration == 0) return this.targetValue;
+        if (this.isFinished() || this.duration == 0) return this.targetValue;
         let percent = Math.min(this.elapsed_time / this.duration, 1);
         if (this.timingFunc == AnimationTimingFunction.EASE_IN) {
             percent = this.easeInExpo(percent);
