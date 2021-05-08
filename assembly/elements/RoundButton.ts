@@ -115,8 +115,13 @@ export default class RoundButton extends Element implements DynamicElement {
     let outer_radius = this.radius - 0.005 * shrink;
     let ring_radius = this.radius + 0.005 + (0.005 * shrink_ring);
 
-    this.drawCircle(this.x, this.y, outer_radius, color_circle);
-    this.drawCircleOutline(this.x, this.y, ring_radius, 0.001, color_ring);
+    this.drawCircle(this.x, this.anim_y.getValue(), outer_radius, color_circle);
+    this.drawCircleOutline(this.x, this.anim_y.getValue(), ring_radius, 0.001, color_ring);
+  }
+
+  moveToY(target_y: f64): void {
+    this.y = target_y;
+    this.anim_y = new Animation(this.anim_y.getValue(), target_y, 0.3, AnimationTimingFunction.EASE_IN_OUT);
   }
 
   onSelect(x: f64, y: f64): bool {

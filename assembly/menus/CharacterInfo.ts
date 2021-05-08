@@ -3,12 +3,15 @@ import NotchedBox from "../elements/NotchedBox";
 import RoundButton from "../elements/RoundButton";
 import Theme from "../types/Theme";
 import UiPanel from "../../codegen/ui/UiPanel";
+import Element from "../types/Element";
 
-export default class CharacterInfo {
+export default class CharacterInfo extends Element {
   state: string = "closed";
   boxes: Container<NotchedBox> = new Container(this.panel);
 
-  constructor(public panel: UiPanel, public character_button: RoundButton) {}
+  constructor(panel: UiPanel, public character_button: RoundButton) {
+    super(panel);
+  }
 
   update(dt: f64): void {
     if (!this.boxes.update(dt)) {

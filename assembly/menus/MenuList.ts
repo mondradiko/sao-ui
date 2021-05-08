@@ -6,6 +6,7 @@ import Theme from "../types/Theme";
 import UiPanel from "../../codegen/ui/UiPanel";
 import CharacterInfo from "./CharacterInfo";
 import PlayerMenu from "./PlayerMenu";
+import TimerCallback from "../types/TimerCallback";
 
 export default class MenuList extends Element {
   buttons: Container<RoundButton>;
@@ -15,12 +16,16 @@ export default class MenuList extends Element {
   character_info: CharacterInfo;
   player_menu: PlayerMenu;
 
+  timers: TimerCallback<Element>[] = [];
+
   entering: bool = false;
   showing: bool = false;
   showing_count: i32 = 0;
   inter_button_entry_delay: f64 = 0.05;
   cumulative_entering_time: f64 = 0;
   inter_button_space: f64 = -0.1;
+
+  selected_button_index: i32 = 0;
 
   constructor(panel: UiPanel) {
     super(panel);
@@ -52,6 +57,15 @@ export default class MenuList extends Element {
   }
 
   update(dt: f64): void {
+    let inProgressTimers: TimerCallback<Element>[] = [];
+    for (let timerId = 0; timerId < this.timers.length; timerId++) {
+      this.timers[timerId].update(dt);
+      if (!this.timers[timerId].isFinished()) {
+        inProgressTimers.push(this.timers[timerId]);
+      }
+    }
+    this.timers = inProgressTimers;
+
     if (this.entering) {
       let time_elapsed = this.cumulative_entering_time + dt;
       this.cumulative_entering_time = time_elapsed;
@@ -92,26 +106,36 @@ export default class MenuList extends Element {
       }
       this.character_button.is_selected = true;
     } else {
-      let was_selected = this.character_button.is_selected;
       if (this.buttons.onSelect(x, y)) {
+        let changed_selection = 0;
         for (let i = 0; i < this.buttons.elements.length; i++) {
           let button = this.buttons.elements[i];
           if (!button.isInBounds(x, y)) {
             button.markDeselected();
+          } else {
+            changed_selection = this.selected_button_index - i;
+            this.selected_button_index = i;
+          }
+        }
+        if (changed_selection != 0) {
+          for (let i = 0; i < this.buttons.elements.length; i++) {
+            let button = this.buttons.elements[i];
+            button.moveToY(button.y + changed_selection * this.inter_button_space);
+          }
+          if (this.character_button.is_selected) {
+            this.timers.push(new TimerCallback(0.3, this.character_info, (character_info) => {
+              (character_info as CharacterInfo).open();
+            }))
+            this.timers.push(new TimerCallback(0.3, this.player_menu, (player_menu) => {
+              (player_menu as PlayerMenu).open();
+            }))
+          } else {
+            this.character_info.close();
+            this.player_menu.close();
           }
         }
       }
       this.boxes.onSelect(x, y);
-
-      if (this.character_button.is_selected != was_selected) {
-        if (this.character_button.is_selected) {
-          this.character_info.open();
-          this.player_menu.open();
-        } else {
-          this.character_info.close();
-          this.player_menu.close();
-        }
-      }
     }
   }
 

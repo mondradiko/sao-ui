@@ -19,6 +19,20 @@ export default class Animation {
         return (percent * delta) + this.initialValue;
     }
 
+    public getValue(): f64 {
+        let percent = Math.min(this.elapsed_time / this.duration, 1);
+        if (this.timingFunc == AnimationTimingFunction.EASE_IN) {
+            percent = this.easeInExpo(percent);
+        } else if (this.timingFunc == AnimationTimingFunction.EASE_OUT) {
+            percent = this.easeOutExpo(percent);
+        } else if (this.timingFunc == AnimationTimingFunction.EASE_IN_OUT) {
+            percent = this.easeInOutExpo(percent);
+        }
+
+        let delta = this.targetValue - this.initialValue;
+        return (percent * delta) + this.initialValue;
+    }
+
     public isFinished(): bool {
         return this.elapsed_time >= this.duration;
     }
