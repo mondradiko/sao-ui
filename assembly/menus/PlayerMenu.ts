@@ -37,7 +37,7 @@ export default class PlayerMenu extends Element {
     if (this.state != "closed") return;
     this.state = "opening";
 
-    let x = this.character_button.x + this.character_button.radius * 2.0;
+    let x = this.character_button.x + this.character_button.radius * 2.5;
     let y = this.character_button.y;
 
     let w = 0.2;
@@ -47,12 +47,13 @@ export default class PlayerMenu extends Element {
 
     let space = h * 1.25;
 
-    let ns = this.character_button.radius * 0.5;  // Notch size
+    let ns = this.character_button.radius * 0.75;  // Notch size
     let nx = x - ns;  // Notch X
     let ny = this.character_button.y;
 
     for (let i = -1; i < 2; i++) {
       let player_menu = new NotchedBox(this.panel, x, y + i * space, w, h, nx, ny, ns, Theme.primary);
+      player_menu.animateIn();
       this.boxes.addElement(player_menu);
     }
   }

@@ -25,6 +25,7 @@ export class PanelImpl extends Element {
     this.menu_list = new MenuList(panel);
     this.console = new Console(panel);
 
+    panel.setColor(0, 0, 0, 0);
     // this.elements = new Container(panel);
 
     // this.elements.addElement(new Label(this.panel, "example text", 0.0, -0.2, Theme.primary));

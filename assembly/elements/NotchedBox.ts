@@ -9,8 +9,8 @@ export default class NotchedBox extends Element implements DynamicElement {
   notch2: Vector2 = this.notch1;
   notch3: Vector2 = this.notch1;
 
-  fade_duration: f64 = 0.1;
-  fade_target: f64 = this.fade_duration;
+  fade_duration: f64 = 0.3;
+  fade_target: f64 = 0.0;
   fade_step: f64 = 0.0;
 
   constructor(panel: UiPanel,
@@ -30,7 +30,7 @@ export default class NotchedBox extends Element implements DynamicElement {
     let b = this.y + this.h;
 
     let size = this.notch_size;
-    let base = this.notch_size * 0.717;
+    let base = this.notch_size * 0.5;
     let nx = this.notch_x;
     let ny = this.notch_y;
 
@@ -90,12 +90,28 @@ export default class NotchedBox extends Element implements DynamicElement {
       alpha = 0.0;
     }
 
-    alpha = alpha * alpha * (3 - 2 * alpha);
+    //alpha = alpha * alpha * (3 - 2 * alpha);
+    if (Math.sign(this.fade_target - this.fade_step) == 1) {
+      alpha = this.easeOutExpo(alpha);
+    } else {
+      alpha = this.easeInExpo(alpha);
+    }
 
     let color = this.color.clone();
     color.a = alpha;
 
-    this.drawRect(this.x, this.y, this.w, this.h, color);
+    let dY = this.y - this.notch_y;
+    let realY = this.notch_y + alpha * 0.9 * dY + 0.1 * dY;
+    let realH = alpha * 0.9 * this.h + 0.1 * this.h;
+
+    if (this.x <= this.notch_x) {
+      let realX = alpha * (this.x - this.notch_x) + this.notch_x;
+      let realW = (this.x - realX) + this.w;
+      this.drawRect(realX, realY, realW, realH, color);
+    } else {
+      let realW = alpha * this.w;
+      this.drawRect(this.x, realY, realW, realH, color);
+    }
 
     this.panel.drawTriangle(
       this.notch1.x, this.notch1.y,
@@ -105,6 +121,14 @@ export default class NotchedBox extends Element implements DynamicElement {
     );
 
     return true;
+  }
+
+  easeOutExpo(x: number): number {
+    return x === 1 ? 1 : 1 - Math.pow(2, -10 * x);
+  }
+
+  easeInExpo(x: number): number {
+    return x === 0 ? 0 : Math.pow(2, 10 * x - 10);
   }
 
   onSelect(x: f64, y: f64): bool {
@@ -120,6 +144,6 @@ export default class NotchedBox extends Element implements DynamicElement {
   }
 
   animateIn(): void {
-    //TODO
+    this.fade_target = this.fade_duration;
   }
 }

@@ -34,7 +34,7 @@ export default class RoundButton extends Element implements DynamicElement {
   private anim_previous_icon_color: Color = Theme.white
   private anim_button_status: i8 = 0;
   private anim_button_time: f64 = 0;
-  anim_change_duration: f64 = 0.1;
+  anim_change_duration: f64 = 0.15;
   anim_ring_color: Color = Theme.white
   anim_circle_color: Color = Theme.white
   anim_icon_color: Color = Theme.white
@@ -90,7 +90,6 @@ export default class RoundButton extends Element implements DynamicElement {
     if (d >= 1) {
       d = 1;
       this.playing_animate_in = false;
-      this.setVisualStatus(this.is_selected ? 3 : 2);
     }
 
     let ease_func = this.easeOutExpo(d);

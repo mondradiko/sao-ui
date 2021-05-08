@@ -32,19 +32,20 @@ export default class CharacterInfo {
     if (this.state != "closed") return;
     this.state = "opening";
 
-    let x = this.character_button.x - this.character_button.radius * 2.0;
+    let x = this.character_button.x - this.character_button.radius * 2.5;
     let y = this.character_button.y;
-    let w = 0.15;
-    let h = 0.25;
+    let w = 0.2;
+    let h = 0.3;
 
     x -= w;
-    y -= h * 0.25;
+    y -= h * 0.5;
 
-    let ns = this.character_button.radius * 0.5;
+    let ns = this.character_button.radius * 0.75;
     let nx = x + w + ns;
     let ny = this.character_button.y;
 
     let character_box = new NotchedBox(this.panel, x, y, w, h, nx, ny, ns, Theme.white);
+    character_box.animateIn();
     this.boxes.addElement(character_box);
   }
 

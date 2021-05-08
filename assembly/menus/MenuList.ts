@@ -59,10 +59,14 @@ export default class MenuList extends Element {
       let num_buttons = this.buttons.elements.length;
       if (num_to_be_showing > this.showing_count) {
         if (this.showing_count == num_buttons) {
-          if (this.cumulative_entering_time >= 1) {
+          if (this.cumulative_entering_time >= 0.6) {
             this.entering = false;
             this.character_info.open();
             this.player_menu.open();
+            for (let i = 0; i < this.buttons.elements.length; i++) {
+              this.buttons.elements[i].setVisualStatus(2);
+            }
+            this.character_button.setVisualStatus(3);
           }
         } else {
           this.buttons.elements[num_buttons - this.showing_count - 1].animate_in_distance = 0.25 + (this.inter_button_space * (num_buttons - this.showing_count)) * -1
