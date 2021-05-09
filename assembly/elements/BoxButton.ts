@@ -19,24 +19,38 @@ export default class BoxButton extends Element implements DynamicElement {
     anim_x: Animation;
     anim_y: Animation;
 
+    temp_potential_colors: Color[] = [new Color(1, 0, 0, 1), new Color(1, 1, 0, 1), new Color(1, 0, 1, 1), new Color(0, 1, 0, 1), new Color(0, 1, 1, 1), new Color(0, 0, 1, 1)];
+
     constructor(panel: UiPanel,
         public x: f64, public y: f64,
-        public w: f64, public h: f64) {
+        public w: f64, public h: f64,
+        public label: string) {
         super(panel);
         this.anim_x = new Animation(x, x, 0, AnimationTimingFunction.LINEAR);
         this.anim_y = new Animation(y, y, 0, AnimationTimingFunction.LINEAR);
     }
 
     update(dt: f64): bool {
-        if (!this.is_visible) {
-            return false;
-        }
         this.anim_circle_color.update(dt);
         this.anim_icon_color.update(dt);
 
-        let box_color = this.anim_circle_color.getCurrentColor();
 
-        this.drawRect(this.anim_x.update(dt), this.anim_y.update(dt), this.w, this.h, box_color);
+        if (this.is_visible) {
+            let box_color = this.anim_circle_color.getCurrentColor();
+            this.drawRect(this.anim_x.update(dt), this.anim_y.update(dt), this.w, this.h, box_color);
+
+            let icon_opacity = this.anim_icon_color.getCurrentColor().a;
+
+            //Temporarily while fonts are being worked on
+
+            let q = this.h / 3;
+            let x = this.anim_x.getValue() + q;
+            let y = this.anim_y.getValue() + q;
+            for (let i = 0; i < this.label.length; i++) {
+                this.drawPretendLetter(this.label.charCodeAt(i), x, y, q, icon_opacity);
+                x += this.h / 2;
+            }
+        }
 
         if (this.anim_circle_color.getCurrentColor().isEqual(Theme.transparent)) {
             this.is_visible = false;
@@ -44,6 +58,18 @@ export default class BoxButton extends Element implements DynamicElement {
         }
 
         return true;
+    }
+
+    drawPretendLetter(charCode: i32, x: f64, y: f64, q: f64, alpha: f64): void {
+        let col1: Color = this.temp_potential_colors[charCode % this.temp_potential_colors.length];
+        let col2: Color = this.temp_potential_colors[(charCode + 1) % this.temp_potential_colors.length];
+        this.panel.drawTriangle(x, y, x + q, y + q, x, y + q, col1.r, col1.g, col1.b, alpha);
+        this.panel.drawTriangle(x, y, x + q, y + q, x + q, y, col2.r, col2.g, col2.b, alpha);
+    }
+
+    moveToY(target_y: f64): void {
+        this.y = target_y;
+        this.anim_y = new Animation(this.anim_y.getValue(), target_y, 0.3, AnimationTimingFunction.EASE_IN_OUT);
     }
 
     /**
@@ -71,9 +97,7 @@ export default class BoxButton extends Element implements DynamicElement {
 
     markDeselected(): void {
         this.is_selected = false;
-        if (this.anim_button_status == 3) {
-            this.setVisualStatus(2);
-        }
+        this.setVisualStatus(2);
     }
 
     isInBounds(x: f64, y: f64): bool {
@@ -81,6 +105,9 @@ export default class BoxButton extends Element implements DynamicElement {
     }
 
     animateIn(): void {
+        this.anim_circle_color = new ColorAnimation(Theme.transparent, this.anim_circle_color.getCurrentColor(), this.anim_change_duration, AnimationTimingFunction.LINEAR);
+        this.anim_icon_color = new ColorAnimation(Theme.transparent, this.anim_icon_color.getCurrentColor(), this.anim_change_duration, AnimationTimingFunction.LINEAR);
+        this.anim_y = new Animation(this.y - 0.03, this.y, this.anim_change_duration, AnimationTimingFunction.EASE_OUT);
         this.is_visible = true;
     }
 

@@ -37,19 +37,32 @@ export class PanelImpl extends Element {
 
   onHover(x: f64, y: f64): void {}
 
+  mouse_down_x: f64 = -1;
+  mouse_down_y: f64 = -1;
+  mouse_down_time: f64 = 0;
+
   onSelect(x: f64, y: f64): void {
-    this.menu_list.onSelect(x, y);
+    this.mouse_down_x = x;
+    this.mouse_down_y = y;
+    this.mouse_down_time = 0;
   }
 
-  onDrag(x: f64, y: f64): void {}
+  onDrag(x: f64, y: f64): void {
+    //this.mouse_has_moved = true;
+  }
 
-  onDeselect(x: f64, y: f64): void {}
+  onDeselect(x: f64, y: f64): void {
+    if (this.mouse_down_time < 0.2) {
+      this.menu_list.onSelect(x, y);
+    }
+  }
 
   handleMessage(message: string): void {
     this.console.print(message);
   }
 
   update(dt: f64): void {
+    this.mouse_down_time += dt;
     // this.elements.update(dt);
     this.menu_list.update(dt);
     this.console.update(dt);
