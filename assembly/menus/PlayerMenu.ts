@@ -71,7 +71,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
         btn.immediateMoveToY(btn.y + this.scroll_velocity);
       }
       this.scroll_velocity /= 1.01;
-      if (this.scroll_velocity < 0.03 || Math.abs(this.findNearestButton().y - this.notch_y) > this.space * 2) {
+      if (Math.abs(this.scroll_velocity) < 0.03 || Math.abs(this.findNearestButton().y - this.notch_y) > this.space * 2) {
         this.selectClosest();
         this.scroll_velocity = 0;
       }
@@ -210,7 +210,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
     let closest_distance: f64 = 100;
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
-      if (Math.abs(btn.y - this.notch_y) < closest_distance) {
+      if (Math.abs(btn.y + this.space / 2 - this.notch_y) < closest_distance) {
         closest = btn;
         closest_distance = Math.abs(btn.y - this.notch_y);
       }
