@@ -26,6 +26,7 @@ export class PanelImpl extends Element {
     this.console = new Console(panel);
 
     panel.setColor(0, 0, 0, 0);
+    panel.setSize(1000, 1000);
     // this.elements = new Container(panel);
 
     // this.elements.addElement(new Label(this.panel, "example text", 0.0, -0.2, Theme.primary));
@@ -41,6 +42,8 @@ export class PanelImpl extends Element {
   mouse_down_y: f64 = -1;
   mouse_down_time: f64 = 0;
 
+  scrolling_y: bool = false;
+
   onSelect(x: f64, y: f64): void {
     this.mouse_down_x = x;
     this.mouse_down_y = y;
@@ -48,12 +51,23 @@ export class PanelImpl extends Element {
   }
 
   onDrag(x: f64, y: f64): void {
-    //this.mouse_has_moved = true;
+    if (!this.scrolling_y && Math.abs(this.mouse_down_y - y) > 0.05) {
+      this.scrolling_y = true;
+    }
+    if (this.scrolling_y) {
+      this.menu_list.onScrollY(x, y);
+    }
   }
 
   onDeselect(x: f64, y: f64): void {
-    if (this.mouse_down_time < 0.2) {
+    if (this.mouse_down_time < 0.2 && 
+      Math.abs(this.mouse_down_x - x) < 0.05 &&
+      Math.abs(this.mouse_down_y - y) < 0.05 ) {
       this.menu_list.onSelect(x, y);
+    }
+    if (this.scrolling_y) {
+      this.scrolling_y = false;
+      this.menu_list.onStopScrollY();
     }
   }
 

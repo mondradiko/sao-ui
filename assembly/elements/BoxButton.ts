@@ -72,6 +72,11 @@ export default class BoxButton extends Element implements DynamicElement {
         this.anim_y = new Animation(this.anim_y.getValue(), target_y, 0.3, AnimationTimingFunction.EASE_IN_OUT);
     }
 
+    immediateMoveToY(target_y: f64): void {
+        this.y = target_y;
+        this.anim_y = new Animation(target_y, target_y, 0, AnimationTimingFunction.LINEAR);
+    }
+
     /**
      * 0 = Entering
      * 1 = Disabled

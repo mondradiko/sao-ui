@@ -139,6 +139,23 @@ export default class MenuList extends Element {
     }
   }
 
+  scrolling_player_menu: bool = false;
+  onScrollY(x: f64, y: f64): void {
+    if (this.player_menu.isInBounds(x, y)) {
+      this.scrolling_player_menu = true;
+    }
+    if (this.scrolling_player_menu) {
+      this.player_menu.onScroll(y);
+    }
+  }
+
+  onStopScrollY(): void {
+    if (this.scrolling_player_menu) {
+      this.scrolling_player_menu = false;
+      this.player_menu.onStopScroll();
+    }
+  }
+
   show(): void {
     this.entering = true;
     this.showing = true;
