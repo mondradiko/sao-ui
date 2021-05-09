@@ -207,10 +207,10 @@ export default class PlayerMenu extends Element implements DynamicElement {
 
   findNearestButton(): BoxButton {
     let closest: BoxButton = this.boxes.elements[0];
-    let closest_distance: f64 = 100;
+    let closest_distance: f64 = -1;
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
-      if (Math.abs(btn.y + this.space / 2 - this.notch_y) < closest_distance) {
+      if (closest_distance < 0 || Math.abs(btn.y + this.h - this.notch_y) < closest_distance) {
         closest = btn;
         closest_distance = Math.abs(btn.y - this.notch_y);
       }
