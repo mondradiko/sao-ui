@@ -58,6 +58,9 @@ export class PanelImpl extends Element {
     if (this.scrolling_y) {
       this.menu_list.onScrollY(x, y);
     }
+    if (this.mouse_down_x - x > 0.2 && this.mouse_down_time < 0.5) {
+      this.menu_list.close();
+    }
   }
 
   onDeselect(x: f64, y: f64): void {

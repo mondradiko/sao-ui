@@ -27,6 +27,7 @@ export default class RoundButton extends Element implements DynamicElement {
   anim_icon_color: ColorAnimation = new ColorAnimation(Theme.white, Theme.white, 0, AnimationTimingFunction.LINEAR);
 
   anim_y: Animation = new Animation(0, 0, 0, AnimationTimingFunction.LINEAR);
+  anim_x: Animation = new Animation(0, 0, 0, AnimationTimingFunction.LINEAR);
 
   constructor(panel: UiPanel,
               public x: f64, public y: f64,
@@ -42,14 +43,15 @@ export default class RoundButton extends Element implements DynamicElement {
     this.anim_ring_color.update(dt);
     this.anim_icon_color.update(dt);
     let draw_y = this.anim_y.update(dt);
+    this.anim_x.update(dt);
 
     if (!this.is_visible) return true;
 
     if (this.playing_clicked_animation) {
       this.drawClicked()
     } else {
-      this.drawCircle(this.x, draw_y, this.radius, this.anim_circle_color.getCurrentColor());
-      this.drawCircleOutline(this.x, draw_y, this.radius + 0.005, 0.001, this.anim_ring_color.getCurrentColor());
+      this.drawCircle(this.anim_x.getValue(), draw_y, this.radius, this.anim_circle_color.getCurrentColor());
+      this.drawCircleOutline(this.anim_x.getValue(), draw_y, this.radius + 0.005, 0.001, this.anim_ring_color.getCurrentColor());
     }
 
     return true;
@@ -105,8 +107,8 @@ export default class RoundButton extends Element implements DynamicElement {
     let outer_radius = this.radius - 0.005 * shrink;
     let ring_radius = this.radius + 0.005 + (0.005 * shrink_ring);
 
-    this.drawCircle(this.x, this.anim_y.getValue(), outer_radius, color_circle);
-    this.drawCircleOutline(this.x, this.anim_y.getValue(), ring_radius, 0.001, color_ring);
+    this.drawCircle(this.anim_x.getValue(), this.anim_y.getValue(), outer_radius, color_circle);
+    this.drawCircleOutline(this.anim_x.getValue(), this.anim_y.getValue(), ring_radius, 0.001, color_ring);
   }
 
   moveToY(target_y: f64): void {
@@ -145,6 +147,17 @@ export default class RoundButton extends Element implements DynamicElement {
   animateIn(): void {
     this.is_visible = true;
     this.anim_y = new Animation(this.y + this.animate_in_distance, this.y, this.animate_in_length, AnimationTimingFunction.EASE_OUT);
+    this.anim_x = new Animation(this.x, this.x, 0, AnimationTimingFunction.LINEAR);
+    this.anim_ring_color = new ColorAnimation(Theme.white, Theme.white, 0, AnimationTimingFunction.LINEAR);
+    this.anim_circle_color = new ColorAnimation(Theme.white, Theme.white, 0, AnimationTimingFunction.LINEAR);
+    this.anim_icon_color = new ColorAnimation(Theme.white, Theme.white, 0, AnimationTimingFunction.LINEAR);
     this.fade_step = 0;
+  }
+
+  animateOut(): void {
+    this.anim_x = new Animation(this.x, this.x - 0.2, 0.3, AnimationTimingFunction.EASE_OUT);
+    this.anim_ring_color = new ColorAnimation(this.anim_ring_color.getCurrentColor(), Theme.transparent, 0.3, AnimationTimingFunction.LINEAR);
+    this.anim_circle_color = new ColorAnimation(this.anim_circle_color.getCurrentColor(), Theme.transparent, 0.3, AnimationTimingFunction.LINEAR);
+    this.anim_icon_color = new ColorAnimation(this.anim_icon_color.getCurrentColor(), Theme.transparent, 0.3, AnimationTimingFunction.LINEAR);
   }
 }

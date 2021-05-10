@@ -172,6 +172,22 @@ export default class MenuList extends Element {
     this.entering = true;
     this.showing = true;
     this.showing_count = 0;
+    this.selected_button_index = 0;
     this.cumulative_entering_time = 0;
+  }
+
+  close(): void {
+    this.character_info.close();
+    this.player_menu.close();
+    for (let i = 0; i < this.buttons.elements.length; i++) {
+      this.buttons.elements[i].animateOut();
+    }
+    this.timers.push(new TimerCallback(0.3, this, (menu) => {
+      let menu2: MenuList = menu as MenuList;
+      menu2.showing = false;
+      for (let i = 0; i < menu2.buttons.elements.length; i++) {
+        menu2.buttons.elements[i].is_visible = false;
+      }
+    }));
   }
 }
