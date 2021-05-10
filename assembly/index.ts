@@ -52,6 +52,7 @@ export class PanelImpl extends Element {
 
   onDrag(x: f64, y: f64): void {
     if (!this.scrolling_y && Math.abs(this.mouse_down_y - y) > 0.02 && this.mouse_down_time > 0.1) {
+      this.menu_list.onStartScrollY(this.mouse_down_x, this.mouse_down_y);
       this.menu_list.onScrollY(this.mouse_down_x, this.mouse_down_y);
       this.scrolling_y = true;
     }

@@ -133,6 +133,13 @@ export default class MenuList extends Element {
     }
   }
 
+  start_scroll_x: f64 = 0;
+  start_scroll_y: f64 = 0;
+  onStartScrollY(x: f64, y: f64): void {
+    this.start_scroll_x = x;
+    this.start_scroll_y = y;
+  }
+
   displacement_y: f64 = 0;
   scrolling_player_menu: bool = false;
   onScrollY(x: f64, y: f64): void {
@@ -152,7 +159,7 @@ export default class MenuList extends Element {
         }
       }
     } else {
-      if (this.player_menu.isInBounds(x, y)) {
+      if (this.player_menu.isInBounds(x, y) && this.player_menu.isInBounds(this.start_scroll_x, this.start_scroll_y)) {
         this.scrolling_player_menu = true;
       }
       if (this.scrolling_player_menu) {
