@@ -181,6 +181,17 @@ export default class PlayerMenu extends Element implements DynamicElement {
       let btn = this.boxes.elements[i];
       btn.immediateMoveToY(btn.y + delta);
     }
+    let closest = this.findNearestButton();
+    for (let i = 0; i < this.boxes.elements.length; i++) {
+      let btn = this.boxes.elements[i];
+      if (btn == closest) {
+        btn.setVisualStatus(0);
+      } else if (i != this.selected_button_index) {
+        btn.setVisualStatus(2);
+      } else {
+        btn.setVisualStatus(3);
+      }
+    }
   }
 
   onStopScroll(): void {
@@ -199,6 +210,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
       if (btn !== closest) {
         btn.markDeselected();
       } else {
+        btn.is_selected = true;
         btn.setVisualStatus(3);
         this.selected_button_index = i;
       }

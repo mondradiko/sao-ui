@@ -99,13 +99,7 @@ export default class MenuList extends Element {
   }
 
   onSelect(x: f64, y: f64): void {
-    if (!this.showing && !this.entering) {
-      this.show();
-      for (let i = 0; i < this.buttons.elements.length; i++) {
-        this.buttons.elements[i].is_selected = false;
-      }
-      this.character_button.is_selected = true;
-    } else {
+    if (this.showing) {
       if (this.buttons.onSelect(x, y)) {
         let changed_selection = 0;
         for (let i = 0; i < this.buttons.elements.length; i++) {
@@ -139,13 +133,31 @@ export default class MenuList extends Element {
     }
   }
 
+  displacement_y: f64 = 0;
   scrolling_player_menu: bool = false;
   onScrollY(x: f64, y: f64): void {
-    if (this.player_menu.isInBounds(x, y)) {
-      this.scrolling_player_menu = true;
-    }
-    if (this.scrolling_player_menu) {
-      this.player_menu.onScroll(y);
+    if (!this.showing) {
+      if (!this.scrolling_player_menu) {
+        this.scrolling_player_menu = true;
+        this.displacement_y = y;
+      } else {
+        let scroll_distance = y - this.displacement_y;
+        if (scroll_distance < -0.2) {
+          this.scrolling_player_menu = false;
+          this.show();
+          for (let i = 0; i < this.buttons.elements.length; i++) {
+            this.buttons.elements[i].is_selected = false;
+          }
+          this.character_button.is_selected = true;
+        }
+      }
+    } else {
+      if (this.player_menu.isInBounds(x, y)) {
+        this.scrolling_player_menu = true;
+      }
+      if (this.scrolling_player_menu) {
+        this.player_menu.onScroll(y);
+      }
     }
   }
 
