@@ -170,6 +170,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
   scroll_velocity: f64 = 0;
 
   onScroll(y: f64): void {
+    if (this.state == "closing") return;
     if (!this.is_scrolling) {
       this.scrolling_y = y;
       this.is_scrolling = true;

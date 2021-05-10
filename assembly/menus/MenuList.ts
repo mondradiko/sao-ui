@@ -182,7 +182,7 @@ export default class MenuList extends Element {
     for (let i = 0; i < this.buttons.elements.length; i++) {
       this.buttons.elements[i].animateOut();
     }
-    this.timers.push(new TimerCallback(0.3, this, (menu) => {
+    this.timers.push(new TimerCallback(0.3 + 0.5, this, (menu) => {
       let menu2: MenuList = menu as MenuList;
       menu2.showing = false;
       for (let i = 0; i < menu2.buttons.elements.length; i++) {

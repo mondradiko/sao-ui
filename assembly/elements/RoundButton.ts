@@ -155,7 +155,7 @@ export default class RoundButton extends Element implements DynamicElement {
   }
 
   animateOut(): void {
-    this.anim_x = new Animation(this.x, this.x - 0.2, 0.3, AnimationTimingFunction.EASE_OUT);
+    //this.anim_x = new Animation(this.x, this.x - 0.2, 0.3, AnimationTimingFunction.EASE_IN);
     this.anim_ring_color = new ColorAnimation(this.anim_ring_color.getCurrentColor(), Theme.transparent, 0.3, AnimationTimingFunction.LINEAR);
     this.anim_circle_color = new ColorAnimation(this.anim_circle_color.getCurrentColor(), Theme.transparent, 0.3, AnimationTimingFunction.LINEAR);
     this.anim_icon_color = new ColorAnimation(this.anim_icon_color.getCurrentColor(), Theme.transparent, 0.3, AnimationTimingFunction.LINEAR);
