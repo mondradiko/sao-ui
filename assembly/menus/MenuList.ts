@@ -201,6 +201,7 @@ export default class MenuList extends Element {
   close(): void {
     this.character_info.close();
     this.player_menu.close();
+    this.settings_menu.close();
     for (let i = 0; i < this.buttons.elements.length; i++) {
       this.buttons.elements[i].animateOut();
     }
