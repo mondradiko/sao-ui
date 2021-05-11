@@ -74,7 +74,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
         this.drawRect(notch_x2, this.notch_y + (y_from_center * this.space * 1.5), 0.003, y_from_center - next_y_from_center, col);
         this.drawRect(notch_x2, this.notch_y - (y_from_center * this.space * 1.5), 0.003, y_from_center - next_y_from_center, col);
       }
-    } else if (this.selected_button_index != -1) {
+    } else if (this.state == "opening" && this.selected_button_index != -1) {
       let notch_x = this.character_button.x + this.character_button.radius * (2.5 - 0.75);
       let notch_x2 = this.character_button.x + this.character_button.radius * 2.5 + 0.005;
       this.panel.drawTriangle(notch_x, this.notch_y, notch_x2, this.notch_y + 0.01, notch_x2, this.notch_y - 0.01,
