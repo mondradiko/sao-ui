@@ -10,25 +10,10 @@ export default class CharacterInfo extends Element implements DynamicElement {
   state: string = "closed";
   boxes: Container<NotchedBox> = new Container(this.panel);
 
-  character_box: NotchedBox;
   w: f64 = 0.2;
 
   constructor(panel: UiPanel, public character_button: RoundButton) {
     super(panel);
-
-    let x = this.character_button.x - this.character_button.radius * 2.5;
-    let y = this.character_button.y;
-    let h = 0.3;
-
-    x -= this.w;
-    y -= h * 0.5;
-
-    let ns = this.character_button.radius * 0.75;
-    let nx = x + this.w + ns;
-    let ny = this.character_button.y;
-
-    this.character_box = new NotchedBox(this.panel, x, y, this.w, h, nx, ny, ns, Theme.white);
-    this.boxes.addElement(this.character_box);
   }
 
   update(dt: f64): bool {
@@ -60,7 +45,20 @@ export default class CharacterInfo extends Element implements DynamicElement {
   open(): void {
     if (this.state != "closed") return;
     this.state = "opening";
-    this.character_box.animateIn();
+    let x = this.character_button.x - this.character_button.radius * 2.5;
+    let y = this.character_button.y;
+    let h = 0.3;
+
+    x -= this.w;
+    y -= h * 0.5;
+
+    let ns = this.character_button.radius * 0.75;
+    let nx = x + this.w + ns;
+    let ny = this.character_button.y;
+
+    let character_box = new NotchedBox(this.panel, x, y, this.w, h, nx, ny, ns, Theme.white);
+    this.boxes.addElement(character_box);
+    character_box.animateIn();
   }
 
   close(): void {

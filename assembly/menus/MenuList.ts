@@ -13,9 +13,11 @@ export default class MenuList extends Element {
   buttons: Container<RoundButton>;
   boxes: Container<DynamicElement>;
   character_button: RoundButton;
+  settings_button: RoundButton;
 
   character_info: CharacterInfo;
   player_menu: PlayerMenu;
+  settings_menu: PlayerMenu;
 
   timers: TimerCallback<Element>[] = [];
 
@@ -48,11 +50,17 @@ export default class MenuList extends Element {
     this.buttons = new Container(panel);
     this.boxes = new Container(panel);
     this.character_button = buttons[0];
+    this.settings_button = buttons[1];
 
     this.character_info = new CharacterInfo(this.panel, this.character_button);
-    this.player_menu = new PlayerMenu(this.panel, this.character_button);
+
+    this.player_menu = new PlayerMenu(this.panel, this.character_button, ["Hi", "Yo", "Sup", "Test", "T2", "X1", "Y2", "Z5", "Logout"]);
+    this.settings_menu = new PlayerMenu(this.panel, this.settings_button, ["Video", "Audio", "UI"]);
+
+
     this.boxes.addElement(this.character_info);
     this.boxes.addElement(this.player_menu);
+    this.boxes.addElement(this.settings_menu);
 
     for (let i = 0; i < buttons.length; i++) {
       this.buttons.addElement(buttons[i]);
@@ -126,6 +134,13 @@ export default class MenuList extends Element {
           } else {
             this.character_info.close();
             this.player_menu.close();
+          }
+          if (this.settings_button.is_selected) {
+            this.timers.push(new TimerCallback(0.3, this.settings_menu, (settings_menu) => {
+              (settings_menu as PlayerMenu).open();
+            }));
+          } else {
+            this.settings_menu.close();
           }
         }
       }

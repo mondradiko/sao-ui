@@ -149,6 +149,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
     this.state = "opening";
     let x = this.character_button.x + this.character_button.radius * 2.5;
     let y = this.character_button.y;
+    this.notch_y = y;
 
     y -= this.h / 2.0;
 
