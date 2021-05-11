@@ -23,7 +23,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
   left_bar_animation: Animation = new Animation(0, 0, 0, AnimationTimingFunction.LINEAR);
   notch_y: f64;
 
-  constructor(panel: UiPanel, public character_button: RoundButton) {
+  constructor(panel: UiPanel, public character_button: RoundButton, public buttons: string[]) {
     super(panel);
     this.boxes = new BoxList(panel);
     this.notch_y = this.character_button.y;
@@ -156,13 +156,14 @@ export default class PlayerMenu extends Element implements DynamicElement {
     let nx = x - ns;  // Notch X
     let ny = this.character_button.y;
 
-    let button_labels: string[] = ["Hi", "Yo", "Sup", "Test", "T2", "X1", "Y2", "Z5", "Logout"];
-    let num_buttons = button_labels.length;
+    let num_buttons = this.buttons.length;
 
     let button_index = num_buttons < 3 ? -1 : 0 - Math.floor(num_buttons / 2);
+    let animate_in_theshold = (num_buttons / 2 - 2)
     for (let i = num_buttons - 1; i >= 0; i--) {
-      let player_menu = new BoxButton(this.panel, x + 0.005, y + button_index * this.space, this.w, this.h, button_labels[i]);
-      this.timers.push(new TimerCallback(i * 0.06, player_menu, (player_menu) => {
+      let player_menu = new BoxButton(this.panel, x + 0.005, y + button_index * this.space, this.w, this.h, this.buttons[i]);
+      let delay = Math.min((i - animate_in_theshold) * 0.06, 1);
+      this.timers.push(new TimerCallback(delay, player_menu, (player_menu) => {
         (player_menu as BoxButton).animateIn();
       }));
       this.boxes.addElement(player_menu);
