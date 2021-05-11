@@ -42,15 +42,16 @@ export default class PlayerMenu extends Element implements DynamicElement {
     this.timers = inProgressTimers;
 
     this.wrapAroundBoxes();
+    let dissapear_tightness = this.boxes.elements.length < 7 && this.boxes.elements.length > 3 ? 20 : 10;
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
       let distance = btn.display_y - this.notch_y;
       if (distance > this.space) {
         let off_by = distance - this.space;
-        btn.opacity = Math.max(0, 1 - (off_by * 10));
+        btn.opacity = Math.max(0, 1 - (off_by * dissapear_tightness));
       } else if (0 - distance > (this.space * 2)) {
         let off_by = 0 - distance - this.space * 2;
-        btn.opacity = Math.max(0, 1 - (off_by * 10));
+        btn.opacity = Math.max(0, 1 - (off_by * dissapear_tightness));
       } else {
         btn.opacity = 1;
       }
@@ -155,7 +156,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
     let nx = x - ns;  // Notch X
     let ny = this.character_button.y;
 
-    let button_labels: string[] = ["Hi", "Yo", "Sup", "Test", "T2", /*"X1", "Y2", "Z5", "Logout"*/];
+    let button_labels: string[] = ["Hi", "Yo", "Sup", "Test", "T2", "X1", "Y2", "Z5", "Logout"];
     let num_buttons = button_labels.length;
 
     let button_index = num_buttons < 3 ? -1 : 0 - Math.floor(num_buttons / 2);
