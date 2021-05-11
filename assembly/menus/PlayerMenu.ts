@@ -155,8 +155,8 @@ export default class PlayerMenu extends Element implements DynamicElement {
     let nx = x - ns;  // Notch X
     let ny = this.character_button.y;
 
-    let button_labels: string[] = ["Hi", "Yo", "Sup", "Test", "T2", "X1", "Y2", "Z5", "Logout"];
-    let num_buttons = 9;
+    let button_labels: string[] = ["Hi", "Yo", "Sup", "Test", "T2", /*"X1", "Y2", "Z5", "Logout"*/];
+    let num_buttons = button_labels.length;
 
     let button_index = num_buttons < 3 ? -1 : 0 - Math.floor(num_buttons / 2);
     for (let i = num_buttons - 1; i >= 0; i--) {
@@ -278,7 +278,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
   }
 
   wrapAroundBoxes(): void {
-    if (this.boxes.elements.length > 5) {
+    if (this.boxes.elements.length >= 5) {
       let min_number_either_side = this.boxes.elements.length >= 7 ? 2 : 1;
       let lowest = this.findLowestButton();
       let highest = this.findHighestButton();
