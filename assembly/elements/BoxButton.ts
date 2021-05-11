@@ -6,18 +6,22 @@ import ColorAnimation from "../types/ColorAnimation";
 import Theme from "../types/Theme";
 import Animation from "../types/Animation";
 import { AnimationTimingFunction } from "../types/Animation";
+import TimerCallback from "../types/TimerCallback";
 
 export default class BoxButton extends Element implements DynamicElement {
 
+    timers: TimerCallback<Element>[] = [];
     public is_selected: bool = false;
     public is_visible: bool = false;
     private anim_button_status: i8 = 0;
     anim_change_duration: f64 = 0.15;
     anim_circle_color: ColorAnimation = new ColorAnimation(Theme.white, Theme.white, 0, AnimationTimingFunction.LINEAR);
     anim_icon_color: ColorAnimation = new ColorAnimation(Theme.white, Theme.white, 0, AnimationTimingFunction.LINEAR);
+    opacity: f64 = 1;
 
     anim_x: Animation;
     anim_y: Animation;
+    display_y: f64 = 0;
 
     temp_potential_colors: Color[] = [new Color(1, 0, 0, 1), new Color(1, 1, 0, 1), new Color(1, 0, 1, 1), new Color(0, 1, 0, 1), new Color(0, 1, 1, 1), new Color(0, 0, 1, 1)];
 
@@ -34,12 +38,22 @@ export default class BoxButton extends Element implements DynamicElement {
         this.anim_circle_color.update(dt);
         this.anim_icon_color.update(dt);
 
+        let inProgressTimers: TimerCallback<Element>[] = [];
+        for (let timerId = 0; timerId < this.timers.length; timerId++) {
+            this.timers[timerId].update(dt);
+            if (!this.timers[timerId].isFinished()) {
+                inProgressTimers.push(this.timers[timerId]);
+            }
+        }
+        this.timers = inProgressTimers;
 
         if (this.is_visible) {
             let box_color = this.anim_circle_color.getCurrentColor();
-            this.drawRect(this.anim_x.update(dt), this.anim_y.update(dt), this.w, this.h, box_color);
+            box_color.a *= this.opacity;
+            this.display_y = this.anim_y.update(dt);
+            this.drawRect(this.anim_x.update(dt), this.display_y, this.w, this.h, box_color);
 
-            let icon_opacity = this.anim_icon_color.getCurrentColor().a;
+            let icon_opacity = this.anim_icon_color.getCurrentColor().a * this.opacity;
 
             //Temporarily while fonts are being worked on
 
@@ -74,7 +88,16 @@ export default class BoxButton extends Element implements DynamicElement {
 
     immediateMoveToY(target_y: f64): void {
         this.y = target_y;
+        this.display_y = target_y;
         this.anim_y = new Animation(target_y, target_y, 0, AnimationTimingFunction.LINEAR);
+    }
+
+    immediatelyMoveToYPreservingAnimation(position_y: f64): void {
+        let relative_y = position_y - this.y;
+        this.y = position_y;
+        this.display_y += relative_y;
+        this.anim_y.targetValue = this.anim_y.targetValue + relative_y;
+        this.anim_y.initialValue = this.anim_y.initialValue + relative_y;
     }
 
     /**

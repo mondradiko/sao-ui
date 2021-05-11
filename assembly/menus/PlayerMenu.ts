@@ -41,11 +41,26 @@ export default class PlayerMenu extends Element implements DynamicElement {
     }
     this.timers = inProgressTimers;
 
+    this.wrapAroundBoxes();
+    for (let i = 0; i < this.boxes.elements.length; i++) {
+      let btn = this.boxes.elements[i];
+      let distance = btn.display_y - this.notch_y;
+      if (distance > this.space) {
+        let off_by = distance - this.space;
+        btn.opacity = Math.max(0, 1 - (off_by * 10));
+      } else if (0 - distance > (this.space * 2)) {
+        let off_by = 0 - distance - this.space * 2;
+        btn.opacity = Math.max(0, 1 - (off_by * 10));
+      } else {
+        btn.opacity = 1;
+      }
+    }
+
     if (!this.boxes.update(dt)) {
       this.state = "closed";
     }
 
-    if (this.state != "closed" && this.selected_button_index == -1) {
+    if (animation_val > 0) {
       let notch_x = this.character_button.x + this.character_button.radius * (2.5 - 0.75);
       let notch_x2 = this.character_button.x + this.character_button.radius * 2.5;
       this.panel.drawTriangle(notch_x, this.notch_y, notch_x2, this.notch_y + 0.01, notch_x2, this.notch_y - 0.01, 1, 1, 1, animation_val);
@@ -62,7 +77,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
       let notch_x = this.character_button.x + this.character_button.radius * (2.5 - 0.75);
       let notch_x2 = this.character_button.x + this.character_button.radius * 2.5 + 0.005;
       this.panel.drawTriangle(notch_x, this.notch_y, notch_x2, this.notch_y + 0.01, notch_x2, this.notch_y - 0.01,
-        Theme.primary.r, Theme.primary.g, Theme.primary.b, animation_val);
+        Theme.primary.r, Theme.primary.g, Theme.primary.b, 1);
     }
 
     if (!this.is_scrolling && this.scroll_velocity != 0) {
@@ -70,8 +85,13 @@ export default class PlayerMenu extends Element implements DynamicElement {
         let btn = this.boxes.elements[i];
         btn.immediateMoveToY(btn.y + this.scroll_velocity);
       }
-      this.scroll_velocity /= 1.01;
-      if (Math.abs(this.scroll_velocity) < 0.03 || Math.abs(this.findNearestButton().y - this.notch_y) > this.space * 2) {
+      this.wrapAroundBoxes();
+      for (let i = 0; i < this.boxes.elements.length; i++) {
+        let btn = this.boxes.elements[i];
+        btn.setVisualStatus(2);
+      }
+      this.scroll_velocity /= 1.02;
+      if (Math.abs(this.scroll_velocity) < 0.0003 || Math.abs(this.findNearestButton().y - this.notch_y) > this.space * 2) {
         this.selectClosest();
         this.scroll_velocity = 0;
       }
@@ -88,22 +108,20 @@ export default class PlayerMenu extends Element implements DynamicElement {
     this.open();
   }
   isInBounds(x: number, y: number): bool {
-    let total_height = this.space * this.boxes.elements.length;
-    let top_y = this.notch_y + (this.selected_button_index == -1 ?
-      (this.space * this.boxes.elements.length / 2) :
-      ((this.boxes.elements.length - this.selected_button_index - 1) * this.space + 0.5 * this.space));
+    let total_height = this.space * 7;
+    let top_y = this.notch_y + this.space * 3.5;
     let box_x = this.character_button.x + this.character_button.radius * 2.5;
     return x >= box_x && x < (box_x + this.w) && y < top_y && y > (top_y - total_height);
   }
 
   onSelect(x: f64, y: f64): bool {
     if (this.boxes.onSelect(x, y)) {
-      let last_selected_index = this.selected_button_index;
       for (let i = 0; i < this.boxes.elements.length; i++) {
         let button = this.boxes.elements[i];
         if (!button.isInBounds(x, y)) {
           button.markDeselected();
         } else {
+          this.left_bar_animation = new Animation(this.left_bar_animation.getValue(), 0, 0.15, AnimationTimingFunction.LINEAR);
           this.selected_button_index = i;
         }
       }
@@ -157,7 +175,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
     this.state = "closing";
     this.selected_button_index = -1;
 
-    this.left_bar_animation = new Animation(1, 0, 0.15, AnimationTimingFunction.LINEAR);
+    this.left_bar_animation = new Animation(this.left_bar_animation.getValue(), 0, 0.15, AnimationTimingFunction.LINEAR);
     for (let i = 0; i < this.boxes.elements.length; i++) {
       this.timers.push(new TimerCallback(0.15, this.boxes.elements[i], (player_menu) => {
         (player_menu as BoxButton).animateOut();
@@ -171,9 +189,13 @@ export default class PlayerMenu extends Element implements DynamicElement {
 
   onScroll(y: f64): void {
     if (this.state == "closing") return;
+    if (this.boxes.elements.length < 4) return;
     if (!this.is_scrolling) {
       this.scrolling_y = y;
       this.is_scrolling = true;
+
+      this.selected_button_index = -1;
+      this.left_bar_animation = new Animation(0, 1, 0.15, AnimationTimingFunction.LINEAR);
     }
     let delta = y - this.scrolling_y;
     this.scroll_velocity = delta;
@@ -182,6 +204,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
       let btn = this.boxes.elements[i];
       btn.immediateMoveToY(btn.y + delta);
     }
+    this.wrapAroundBoxes();
     let closest = this.findNearestButton();
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
@@ -214,6 +237,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
         btn.is_selected = true;
         btn.setVisualStatus(3);
         this.selected_button_index = i;
+        this.left_bar_animation = new Animation(this.left_bar_animation.getValue(), 0, 0.15, AnimationTimingFunction.LINEAR);
       }
     }
   }
@@ -229,5 +253,41 @@ export default class PlayerMenu extends Element implements DynamicElement {
       }
     }
     return closest;
+  }
+
+  findLowestButton(): BoxButton {
+    let lowest: BoxButton = this.boxes.elements[0];
+    for (let i = 0; i < this.boxes.elements.length; i++) {
+      let btn = this.boxes.elements[i];
+      if (lowest.y > btn.y) {
+        lowest = btn;
+      }
+    }
+    return lowest;
+  }
+
+  findHighestButton(): BoxButton {
+    let highest: BoxButton = this.boxes.elements[0];
+    for (let i = 0; i < this.boxes.elements.length; i++) {
+      let btn = this.boxes.elements[i];
+      if (highest.y < btn.y) {
+        highest = btn;
+      }
+    }
+    return highest;
+  }
+
+  wrapAroundBoxes(): void {
+    if (this.boxes.elements.length > 5) {
+      let min_number_either_side = this.boxes.elements.length >= 7 ? 2 : 1;
+      let lowest = this.findLowestButton();
+      let highest = this.findHighestButton();
+      if (this.notch_y - lowest.y < this.space * (min_number_either_side + 1)) {
+        highest.immediatelyMoveToYPreservingAnimation(lowest.y - this.space);
+      }
+      if (highest.y - this.notch_y < this.space * min_number_either_side) {
+        lowest.immediatelyMoveToYPreservingAnimation(highest.y + this.space);
+      }
+    }
   }
 }

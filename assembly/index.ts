@@ -26,7 +26,6 @@ export class PanelImpl extends Element {
     this.console = new Console(panel);
 
     panel.setColor(0, 0, 0, 0);
-    panel.setSize(1000, 1000);
     // this.elements = new Container(panel);
 
     // this.elements.addElement(new Label(this.panel, "example text", 0.0, -0.2, Theme.primary));
