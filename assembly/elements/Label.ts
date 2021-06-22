@@ -2,7 +2,7 @@ import Color from "../types/Color";
 import Element from "../types/Element";
 import DynamicElement from "../types/DynamicElement";
 import GlyphStyle from "../../codegen/ui/GlyphStyle";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 
 export default class Label extends Element implements DynamicElement {
   w: f64;

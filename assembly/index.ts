@@ -8,7 +8,7 @@ import Container from "./types/Container";
 import RoundButton from "./elements/RoundButton";
 import Theme from "./types/Theme";
 import Console from "./menus/Console";
-import UiPanel from "../codegen/ui/UiPanel";
+import UiPanel from "./types/UiPanel";
 
 import MenuList from "./menus/MenuList";
 
@@ -64,7 +64,7 @@ export class PanelImpl extends Element {
   }
 
   onDeselect(x: f64, y: f64): void {
-    if (this.mouse_down_time < 0.2 && 
+    if (this.mouse_down_time < 0.2 &&
       Math.abs(this.mouse_down_x - x) < 0.05 &&
       Math.abs(this.mouse_down_y - y) < 0.05 ) {
       this.menu_list.onSelect(x, y);

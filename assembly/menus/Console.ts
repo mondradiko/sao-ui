@@ -1,6 +1,6 @@
 import GlyphStyle from "../../codegen/ui/GlyphStyle";
 import DynamicElement from "../types/DynamicElement";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 
 class QueuedMessage implements DynamicElement {
   lifespan: f64 = 5.0;

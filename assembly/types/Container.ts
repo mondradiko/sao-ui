@@ -1,6 +1,6 @@
 import Element from "./Element";
 import DynamicElement from "./DynamicElement";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 
 export default class Container<ElementType extends DynamicElement> extends Element implements DynamicElement {
   elements: Array<ElementType> = [];
