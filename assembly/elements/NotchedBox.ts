@@ -2,7 +2,7 @@ import Color from "../types/Color";
 import Element from "../types/Element";
 import DynamicElement from "../types/DynamicElement";
 import UiPanel from "../types/UiPanel";
-import Vector2 from "../../codegen/types/Vector2";
+import Vector2 from "../types/Vector2";
 
 export default class NotchedBox extends Element implements DynamicElement {
   notch1: Vector2 = new Vector2(0.0, 0.0);
