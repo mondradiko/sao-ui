@@ -1,5 +1,5 @@
 import Color from "./Color";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "./UiPanel";
 
 export default class Element {
   constructor(public panel: UiPanel) {}
