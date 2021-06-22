@@ -7,7 +7,6 @@ import Label from "./elements/Label";
 import Container from "./types/Container";
 import RoundButton from "./elements/RoundButton";
 import Theme from "./types/Theme";
-import Console from "./menus/Console";
 import UiPanel from "./types/UiPanel";
 
 import MenuList from "./menus/MenuList";
@@ -16,14 +15,12 @@ let main_panel: PanelImpl;
 
 export class PanelImpl extends Element {
   menu_list: MenuList;
-  console: Console;
   is_showing_menu: bool
 
   constructor(panel: UiPanel) {
     super(panel);
 
     this.menu_list = new MenuList(panel);
-    this.console = new Console(panel);
 
     panel.setColor(0, 0, 0, 0);
     // this.elements = new Container(panel);
@@ -75,15 +72,10 @@ export class PanelImpl extends Element {
     }
   }
 
-  handleMessage(message: string): void {
-    this.console.print(message);
-  }
-
   update(dt: f64): void {
     this.mouse_down_time += dt;
     // this.elements.update(dt);
     this.menu_list.update(dt);
-    this.console.update(dt);
 
     // this.drawCircleOutline(-0.25, 0, 0.115, 0.003, this.primary);
 	  // this.drawCircle(-0.25, 0, 0.1, this.primary);
@@ -94,8 +86,4 @@ export class PanelImpl extends Element {
 	  // this.drawRect(-0.94, -0.4, 0.5, 0.8, this.white);
 	  // this.panel.drawTriangle(-0.38, 0, -0.44, 0.035, -0.44, -0.035, this.white.r, this.white.g, this.white.b, this.white.a);
   }
-}
-
-export function handleMessage(message: string): void {
-  main_panel.handleMessage(message);
 }
