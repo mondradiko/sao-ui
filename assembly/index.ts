@@ -87,3 +87,7 @@ export class PanelImpl extends Element {
 	  // this.panel.drawTriangle(-0.38, 0, -0.44, 0.035, -0.44, -0.035, this.white.r, this.white.g, this.white.b, this.white.a);
   }
 }
+
+export function bind_panel(panel: UiPanel): PanelImpl {
+  return new PanelImpl(panel);
+}
