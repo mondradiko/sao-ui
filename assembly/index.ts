@@ -21,6 +21,7 @@ export class PanelImpl extends Element {
     super(panel);
 
     this.menu_list = new MenuList(panel);
+    this.menu_list.show();
 
     panel.setColor(0, 0, 0, 0);
     // this.elements = new Container(panel);
@@ -89,5 +90,10 @@ export class PanelImpl extends Element {
 }
 
 export function bind_panel(panel: UiPanel): PanelImpl {
-  return new PanelImpl(panel);
+  main_panel = new PanelImpl(panel);
+  return main_panel;
+}
+
+export function update(dt: f32): void {
+  main_panel.update(dt as f32);
 }
