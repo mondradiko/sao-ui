@@ -3,7 +3,7 @@ import Element from "../types/Element";
 import NotchedBox from "../elements/NotchedBox";
 import RoundButton from "../elements/RoundButton";
 import Theme from "../types/Theme";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 import CharacterInfo from "./CharacterInfo";
 import PlayerMenu from "./PlayerMenu";
 import TimerCallback from "../types/TimerCallback";

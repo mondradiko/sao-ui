@@ -3,7 +3,7 @@ import RoundButton from "../elements/RoundButton";
 import Element from "../types/Element";
 import Theme from "../types/Theme";
 import BoxList from "./BoxList";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 import BoxButton from "../elements/BoxButton";
 import DynamicElement from "../types/DynamicElement";
 import TimerCallback from "../types/TimerCallback";

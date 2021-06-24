@@ -1,5 +1,5 @@
 import Container from "../types/Container";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 import BoxButton from "../elements/BoxButton";
 
 export default class BoxList extends Container<BoxButton> {

@@ -7,8 +7,7 @@ import Label from "./elements/Label";
 import Container from "./types/Container";
 import RoundButton from "./elements/RoundButton";
 import Theme from "./types/Theme";
-import Console from "./menus/Console";
-import UiPanel from "../codegen/ui/UiPanel";
+import UiPanel from "./types/UiPanel";
 
 import MenuList from "./menus/MenuList";
 
@@ -16,14 +15,13 @@ let main_panel: PanelImpl;
 
 export class PanelImpl extends Element {
   menu_list: MenuList;
-  console: Console;
   is_showing_menu: bool
 
   constructor(panel: UiPanel) {
     super(panel);
 
     this.menu_list = new MenuList(panel);
-    this.console = new Console(panel);
+    this.menu_list.show();
 
     panel.setColor(0, 0, 0, 0);
     // this.elements = new Container(panel);
@@ -64,7 +62,7 @@ export class PanelImpl extends Element {
   }
 
   onDeselect(x: f64, y: f64): void {
-    if (this.mouse_down_time < 0.2 && 
+    if (this.mouse_down_time < 0.2 &&
       Math.abs(this.mouse_down_x - x) < 0.05 &&
       Math.abs(this.mouse_down_y - y) < 0.05 ) {
       this.menu_list.onSelect(x, y);
@@ -75,15 +73,10 @@ export class PanelImpl extends Element {
     }
   }
 
-  handleMessage(message: string): void {
-    this.console.print(message);
-  }
-
   update(dt: f64): void {
     this.mouse_down_time += dt;
     // this.elements.update(dt);
     this.menu_list.update(dt);
-    this.console.update(dt);
 
     // this.drawCircleOutline(-0.25, 0, 0.115, 0.003, this.primary);
 	  // this.drawCircle(-0.25, 0, 0.1, this.primary);
@@ -96,6 +89,11 @@ export class PanelImpl extends Element {
   }
 }
 
-export function handleMessage(message: string): void {
-  main_panel.handleMessage(message);
+export function bind_panel(panel: UiPanel): PanelImpl {
+  main_panel = new PanelImpl(panel);
+  return main_panel;
+}
+
+export function update(dt: f32): void {
+  main_panel.update(dt as f32);
 }

@@ -2,7 +2,7 @@ import Container from "../types/Container";
 import NotchedBox from "../elements/NotchedBox";
 import RoundButton from "../elements/RoundButton";
 import Theme from "../types/Theme";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 import Element from "../types/Element";
 import DynamicElement from "../types/DynamicElement";
 

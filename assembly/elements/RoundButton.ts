@@ -2,7 +2,7 @@ import Color from "../types/Color";
 import Element from "../types/Element";
 import DynamicElement from "../types/DynamicElement";
 import Theme from "../types/Theme";
-import UiPanel from "../../codegen/ui/UiPanel";
+import UiPanel from "../types/UiPanel";
 import ColorAnimation from "../types/ColorAnimation";
 import Animation from "../types/Animation";
 import { AnimationTimingFunction } from "../types/Animation";
