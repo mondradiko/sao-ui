@@ -97,3 +97,19 @@ export function bind_panel(panel: UiPanel): PanelImpl {
 export function update(dt: f32): void {
   main_panel.update(dt as f32);
 }
+
+export function on_hover(self: PanelImpl, x: f32, y: f32): void {
+  self.onHover(x, y);
+}
+
+export function on_select(self: PanelImpl, x: f32, y: f32): void {
+  self.onSelect(x, y);
+}
+
+export function on_drag(self: PanelImpl, x: f32, y: f32): void {
+  self.onDrag(x, y);
+}
+
+export function on_deselect(self: PanelImpl, x: f32, y: f32): void {
+  self.onDeselect(x, y);
+}
