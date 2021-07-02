@@ -92,9 +92,12 @@ export default class PlayerMenu extends Element implements DynamicElement {
         btn.setVisualStatus(2);
       }
       this.scroll_velocity /= 1.02;
-      if (Math.abs(this.scroll_velocity) < 0.0003 || Math.abs(this.findNearestButton().y - this.notch_y) > this.space * 2) {
-        this.selectClosest();
-        this.scroll_velocity = 0;
+      let closest = this.findNearestButton();
+      if (closest != null) {
+        if (Math.abs(this.scroll_velocity) < 0.0003 || Math.abs(closest.y - this.notch_y) > this.space * 2) {
+          this.selectClosest();
+          this.scroll_velocity = 0;
+        }
       }
     }
 
@@ -209,6 +212,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
     }
     this.wrapAroundBoxes();
     let closest = this.findNearestButton();
+    if (closest == null) return;
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
       if (btn == closest) {
@@ -230,6 +234,7 @@ export default class PlayerMenu extends Element implements DynamicElement {
 
   selectClosest(): void {
     let closest = this.findNearestButton();
+    if (closest == null) return;
     let delta = closest.y - this.notch_y + this.space / 2;
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
@@ -245,8 +250,8 @@ export default class PlayerMenu extends Element implements DynamicElement {
     }
   }
 
-  findNearestButton(): BoxButton {
-    let closest: BoxButton = this.boxes.elements[0];
+  findNearestButton(): BoxButton | null {
+    let closest: BoxButton | null = null;
     let closest_distance: f64 = -1;
     for (let i = 0; i < this.boxes.elements.length; i++) {
       let btn = this.boxes.elements[i];
